@@ -94,3 +94,14 @@ create_group_button = tk.Button(main_frame, text="Create New Group", font=BUTTON
                                 command=create_group)
 create_group_button.pack(side=tk.BOTTOM, pady=10)
 chat_frame = tk.Frame(root, bg=DARK_GREY)
+chat_label = tk.Label(chat_frame, text="Chat", font=FONT, bg=DARK_GREY, fg=WHITE)
+chat_label.pack(side=tk.TOP, pady=10)
+
+chat_window = scrolledtext.ScrolledText(chat_frame, font=SMALL_FONT, bg=MEDIUM_GREY, fg=WHITE)
+chat_window.pack(expand=True, fill=tk.BOTH)
+
+message_entry = tk.Entry(chat_frame, font=FONT, bg=MEDIUM_GREY, fg=WHITE, width=40)
+message_entry.pack(side=tk.LEFT, padx=10)
+
+send_button = tk.Button(chat_frame, text="Send", font=BUTTON_FONT, bg=OCEAN_BLUE, fg=WHITE, command=send_message)
+send_button.pack(side=tk.LEFT, padx=10)
