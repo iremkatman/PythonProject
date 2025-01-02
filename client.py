@@ -105,3 +105,10 @@ message_entry.pack(side=tk.LEFT, padx=10)
 
 send_button = tk.Button(chat_frame, text="Send", font=BUTTON_FONT, bg=OCEAN_BLUE, fg=WHITE, command=send_message)
 send_button.pack(side=tk.LEFT, padx=10)
+main_menu_button = tk.Button(chat_frame, text="Main Menu", font=BUTTON_FONT, bg=OCEAN_BLUE, fg=WHITE,
+                              command=return_to_main_menu)
+main_menu_button.pack(side=tk.LEFT, padx=10)
+
+if __name__ == "__main__":
+    login()
+    root.mainloop()
