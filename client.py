@@ -90,3 +90,7 @@ groups_label.pack(side=tk.TOP, pady=5)
 
 groups_frame = tk.Frame(main_frame, bg=MEDIUM_GREY)
 groups_frame.pack(fill=tk.BOTH, expand=True)
+create_group_button = tk.Button(main_frame, text="Create New Group", font=BUTTON_FONT, bg=OCEAN_BLUE, fg=WHITE,
+                                command=create_group)
+create_group_button.pack(side=tk.BOTTOM, pady=10)
+chat_frame = tk.Frame(root, bg=DARK_GREY)
