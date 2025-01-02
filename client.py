@@ -75,3 +75,18 @@ def handle_server_message(message):
         except ValueError:
             print(f"Invalid message format: {message}")
 
+
+#GUI PART
+
+root = tk.Tk()
+root.geometry("800x600")
+root.title("Chat Application")
+root.withdraw()
+
+main_frame = tk.Frame(root, bg=MEDIUM_GREY)
+
+groups_label = tk.Label(main_frame, text="Groups", font=FONT, bg=MEDIUM_GREY, fg=WHITE)
+groups_label.pack(side=tk.TOP, pady=5)
+
+groups_frame = tk.Frame(main_frame, bg=MEDIUM_GREY)
+groups_frame.pack(fill=tk.BOTH, expand=True)
