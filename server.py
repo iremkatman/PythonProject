@@ -119,3 +119,63 @@ def handle_client(client, username):
             del active_clients[username]
         client.close()
 
+        def client_handler(client):
+            """Handle initial connection and authentication for a client."""
+            try:
+                # Send the server's public key to the client
+                client.send(public_key.save_pkcs1())
+                print("Server public key sent.")
+
+                # Receive the client's public key first
+                client_public_key = rsa.PublicKey.load_pkcs1(client.recv(1024))
+                print(f"Received client public key: {client_public_key}")
+
+                # Then receive and decode the client's username
+                encrypted_username = client.recv(1024).decode('utf-8')
+                print(f"Received encrypted username: {encrypted_username}")
+                username = decrypt_message(encrypted_username)
+
+                if username and username not in active_clients:
+                    # Add the new client to active clients
+                    active_clients[username] = (client, None, client_public_key)
+
+                    # Send a welcome message to the new client
+                    send_message_to_client(client, f"SERVER~Welcome {username}!", client_public_key)
+
+                    # Send the updated group list to the new client
+                    send_message_to_client(client, f"SERVER~GROUPS~{'~'.join(groups.keys())}", client_public_key)
+
+                    # Broadcast the updated group list to all connected clients
+                    broadcast_group_update()
+
+                    # Start a new thread to handle communication with the client
+                    threading.Thread(target=handle_client, args=(client, username)).start()
+                else:
+                    # Send an error message if the username is taken or invalid
+                    send_message_to_client(client, "SERVER~Username already taken or invalid.", client_public_key)
+                    client.close()
+            except Exception as e:
+                print(f"Client handler error: {e}")
+                client.close()
+
+        def main():
+            """Main server loop to accept and handle client connections."""
+            server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            try:
+                server.bind((HOST, PORT))
+                print(f"Server running on {HOST}:{PORT}")
+            except Exception as e:
+                print(f"Error: {e}")
+                return
+
+            server.listen(LISTENER_LIMIT)
+            while True:
+                try:
+                    client, _ = server.accept()
+                    threading.Thread(target=client_handler, args=(client,)).start()
+                except Exception as e:
+                    print(f"Error accepting client: {e}")
+
+        if __name__ == "__main__":
+            main()
+
