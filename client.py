@@ -111,6 +111,98 @@ def create_group():
     if group_name:
         send_message_to_server(f"CREATE_GROUP~{group_name}")
 
+def join_group(group_name):
+    global current_group
+    if group_name:
+        send_message_to_server(f"JOIN_GROUP~{group_name}")
+        current_group = group_name
+        chat_label.config(text=f"Chat: {group_name}")
+        chat_window.config(state=tk.NORMAL)
+        chat_window.delete(1.0, tk.END)
+        chat_window.config(state=tk.DISABLED)
+
+def leave_group():
+    global current_group
+    if current_group:
+        send_message_to_server("LEAVE_GROUP")
+        current_group = None
+
+def send_message():
+    message = message_entry.get()
+    if message:
+        send_message_to_server(f"SEND_MESSAGE~{message}")
+        message_entry.delete(0, tk.END)
+
+def update_groups_frame():
+    for widget in groups_frame.winfo_children():
+        widget.destroy()
+
+    if is_loading:  # Gruplar yükleniyorsa
+        loading_label = tk.Label(groups_frame, text="Loading groups...", font=FONT, bg=MEDIUM_GREY, fg=WHITE)
+        loading_label.pack(pady=20)
+        return
+
+    if not groups:  # Gruplar boşsa
+        empty_label = tk.Label(groups_frame, text="No groups available.", font=FONT, bg=MEDIUM_GREY, fg=WHITE)
+        empty_label.pack(pady=20)
+    else:
+        for group in groups:
+            group_frame = tk.Frame(groups_frame, bg=MEDIUM_GREY)
+            group_frame.pack(fill=tk.X, pady=5)
+
+            group_label = tk.Label(group_frame, text=group, font=FONT, bg=MEDIUM_GREY, fg=WHITE)
+            group_label.pack(side=tk.LEFT, padx=10)
+
+            join_button = tk.Button(group_frame, text="Join", font=BUTTON_FONT, bg=OCEAN_BLUE, fg=WHITE,
+                                    command=lambda g=group: on_join_group(g))
+            join_button.pack(side=tk.RIGHT, padx=10)
+
+def on_join_group(group_name):
+    join_group(group_name)
+    main_frame.pack_forget()
+    chat_frame.pack(expand=True, fill=tk.BOTH)
+
+def add_message(message):
+    chat_window.config(state=tk.NORMAL)
+    chat_window.insert(tk.END, message + "\n")
+    chat_window.config(state=tk.DISABLED)
+
+def return_to_main_menu():
+    leave_group()
+    chat_frame.pack_forget()
+    main_frame.pack(expand=True, fill=tk.BOTH)
+    fetch_groups()
+
+def login():
+    global username
+    username = simpledialog.askstring("Login", "Enter your username:")
+    if username:
+        if connect_to_server():
+            # Send the client's public key first
+            client.send(client_public_key.save_pkcs1())
+            print(f"Sent client public key: {client_public_key}")
+
+            # Encrypt and send the username
+            encrypted_username = encrypt_message(username)
+            print(f"Sending encrypted username: {encrypted_username}")
+            client.send(encrypted_username.encode('utf-8'))
+
+            # Start listening for messages
+            threading.Thread(target=listen_for_messages, daemon=True).start()
+
+            # UI'yi göster
+            root.deiconify()
+            main_frame.pack(expand=True, fill=tk.BOTH)
+
+            # Grupları yüklemeyi başlat
+            threading.Thread(target=fetch_groups, daemon=True).start()
+        else:
+            root.quit()
+    else:
+        messagebox.showerror("Error", "Username is required!")
+        root.quit()
+
+
 
 #GUI PART
 
