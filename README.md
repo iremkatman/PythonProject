@@ -1,4 +1,4 @@
-# Cloud-Based Group Chat Application**
+# Cloud-Based Group Chat Application
 
 ## Overview
 The **Cloud-Based Group Chat Application** is a Python-based platform designed for secure, real-time group communication. It leverages **RSA encryption** to ensure end-to-end security for all messages exchanged between clients and is hosted on **Google Cloud Platform (GCP)** for global accessibility and scalability.
@@ -19,6 +19,8 @@ This application demonstrates the integration of robust encryption techniques, e
   - Hosted on Google Cloud Platform for scalability and reliable global access.
 - **Concurrent Connections**: 
   - Supports multiple users simultaneously with efficient threading on the server.
+- **NAT Traversal Compatibility:**
+  -  Designed to work seamlessly with clients behind Network Address Translation (NAT).
 
 ---
 
