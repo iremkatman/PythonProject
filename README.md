@@ -140,4 +140,3 @@ This application demonstrates the integration of robust encryption techniques, e
 
 ---
 
-This detailed README provides all the necessary information for potential users and contributors to understand, set up, and use your project effectively. Let me know if you'd like further customization!
