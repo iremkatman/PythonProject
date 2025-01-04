@@ -55,6 +55,11 @@ This application demonstrates the integration of robust encryption techniques, e
 - Hosted on Google Cloud Platform with a public IP for client-server communication.
 - Configured to handle concurrent connections and ensure uptime with GCP's infrastructure.
 
+### NAT Compatibility:
+This application is designed to work seamlessly with clients behind Network Address Translation (NAT).
+- Server Accessibility: The server is hosted on Google Cloud Platform with a public IP address, making it reachable by clients regardless of their network configuration.
+- Client-Server Communication: NAT clients can initiate outbound connections to the server. The NAT router tracks these connections, allowing bidirectional communication without additional configuration.
+- Message Routing: All messages are routed through the server, avoiding the need for direct client-to-client connections.
 ---
 
 ## Installation and Setup
