@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter import scrolledtext, messagebox, simpledialog
 import rsa
 
-HOST = '34.154.59.250'  # Server IP
+HOST = '34.154.52.0'
 PORT = 1234
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -24,14 +24,13 @@ SMALL_FONT = ("Helvetica", 13)
 username = None
 current_group = None
 groups = []
-is_loading = False  # Yükleme durumu
+is_loading = False
 
 
 def connect_to_server():
     global server_public_key
     try:
         client.connect((HOST, PORT))
-        # Receive the server's public key
         server_public_key_data = client.recv(1024)
         server_public_key = rsa.PublicKey.load_pkcs1(server_public_key_data)
         print("Connected to the server and public key received.")
@@ -86,7 +85,7 @@ def handle_server_message(message):
     if message.startswith("SERVER~GROUPS~"):
         groups_list = message.split("~")[2:]
         groups = groups_list if groups_list[0] != "" else []
-        is_loading = False  # Yükleme tamamlandı
+        is_loading = False
         update_groups_frame()
     elif message.startswith("SERVER~"):
         server_message = message.replace("SERVER~", "").strip()
@@ -101,7 +100,7 @@ def handle_server_message(message):
 
 def fetch_groups():
     global is_loading
-    is_loading = True  # Yükleme başlıyor
+    is_loading = True
     update_groups_frame()
     send_message_to_server("FETCH_GROUPS")
 
@@ -137,12 +136,12 @@ def update_groups_frame():
     for widget in groups_frame.winfo_children():
         widget.destroy()
 
-    if is_loading:  # Gruplar yükleniyorsa
+    if is_loading:
         loading_label = tk.Label(groups_frame, text="Loading groups...", font=FONT, bg=MEDIUM_GREY, fg=WHITE)
         loading_label.pack(pady=20)
         return
 
-    if not groups:  # Gruplar boşsa
+    if not groups:
         empty_label = tk.Label(groups_frame, text="No groups available.", font=FONT, bg=MEDIUM_GREY, fg=WHITE)
         empty_label.pack(pady=20)
     else:
@@ -190,11 +189,11 @@ def login():
             # Start listening for messages
             threading.Thread(target=listen_for_messages, daemon=True).start()
 
-            # UI'yi göster
+
             root.deiconify()
             main_frame.pack(expand=True, fill=tk.BOTH)
 
-            # Grupları yüklemeyi başlat
+
             threading.Thread(target=fetch_groups, daemon=True).start()
         else:
             root.quit()
